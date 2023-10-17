@@ -20,8 +20,14 @@ namespace UdemyRabbitMQ.subscriber
             // Eğer publisher tarafında bu kuyruk varsa tekrardan declare etmeye gerek yok.Varsa da publisher ve subscriber parametreleri aynı olmalı
             //channel.QueueDeclare("hello queue", true, false, false);
 
+            channel.BasicQos(0, 1, false); // true,her bir subscriber a ortadaki.değer/subscriber tane.
+                                           // true değeri false olursa ortadaki sayı herbir subscriber a kaç tane değer gönderileceğini                 söyler.Örneğin 50 mesaj varsa 1'er,3'er yollar vb.
+
             var consumer=new EventingBasicConsumer(channel);
-            channel.BasicConsume("hello-queue", true, consumer);
+
+            // false olunca kuyruktan mesajı hemen silme
+
+            channel.BasicConsume("hello-queue", false, consumer);
 
 
             // AŞAĞIDAKİ PRİVATE METODUN KISA HALİ
@@ -30,6 +36,10 @@ namespace UdemyRabbitMQ.subscriber
             {
                 var message=Encoding.UTF8.GetString(e.Body.ToArray());
                 Console.WriteLine("Gelen Mesaj:"+message);
+                // bana ulaştırılan mesajı hangi tagla oluşturmuşsa kuyruktan siler. e.DeliveryTag
+                // false değeri ilgili mesajın durumunu rabbitmq ya bildir
+
+                channel.BasicAck(e.DeliveryTag, false);
             };
             
 
