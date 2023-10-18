@@ -20,6 +20,16 @@ namespace UdemyRabbitMQ.subscriber
             // Eğer publisher tarafında bu kuyruk varsa tekrardan declare etmeye gerek yok.Varsa da publisher ve subscriber parametreleri aynı olmalı
             //channel.QueueDeclare("hello queue", true, false, false);
 
+            //channel.ExchangeDeclare("logs-fanout", durable: true, type: ExchangeType.Fanout);
+
+
+            //var randomQueueName = channel.QueueDeclare().QueueName; // random kuyruk ismi verir.
+            var randomQueueName = "log-database-save-queue";
+            channel.QueueDeclare(randomQueueName, true, false, false); // kuruklar kalıcı olarak kalır
+            channel.QueueBind(randomQueueName, "logs-fanout", "", null); // subscriberlar kapandığında kuyruklar silinir
+
+
+
             channel.BasicQos(0, 1, false); // true,her bir subscriber a ortadaki.değer/subscriber tane.
                                            // true değeri false olursa ortadaki sayı herbir subscriber a kaç tane değer gönderileceğini                 söyler.Örneğin 50 mesaj varsa 1'er,3'er yollar vb.
 
@@ -27,7 +37,9 @@ namespace UdemyRabbitMQ.subscriber
 
             // false olunca kuyruktan mesajı hemen silme
 
-            channel.BasicConsume("hello-queue", false, consumer);
+            channel.BasicConsume(randomQueueName, false, consumer);
+
+            Console.WriteLine("Loglar dinleniyor...");
 
 
             // AŞAĞIDAKİ PRİVATE METODUN KISA HALİ
