@@ -1,6 +1,7 @@
 ﻿using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
+using System.IO;
 using System.Text;
 
 namespace UdemyRabbitMQ.subscriber
@@ -24,9 +25,9 @@ namespace UdemyRabbitMQ.subscriber
 
 
             //var randomQueueName = channel.QueueDeclare().QueueName; // random kuyruk ismi verir.
-            var randomQueueName = "log-database-save-queue";
-            channel.QueueDeclare(randomQueueName, true, false, false); // kuruklar kalıcı olarak kalır
-            channel.QueueBind(randomQueueName, "logs-fanout", "", null); // subscriberlar kapandığında kuyruklar silinir
+            //var randomQueueName = "log-database-save-queue";
+            //channel.QueueDeclare(randomQueueName, true, false, false); // kuruklar kalıcı olarak kalır
+            //channel.QueueBind(randomQueueName, "logs-fanout", "", null); // subscriberlar kapandığında kuyruklar silinir
 
 
 
@@ -35,9 +36,12 @@ namespace UdemyRabbitMQ.subscriber
 
             var consumer=new EventingBasicConsumer(channel);
 
+
+            var queueName = "direct-queue-Critical";
+
             // false olunca kuyruktan mesajı hemen silme
 
-            channel.BasicConsume(randomQueueName, false, consumer);
+            channel.BasicConsume(queueName, false, consumer);
 
             Console.WriteLine("Loglar dinleniyor...");
 
@@ -50,6 +54,9 @@ namespace UdemyRabbitMQ.subscriber
                 Console.WriteLine("Gelen Mesaj:"+message);
                 // bana ulaştırılan mesajı hangi tagla oluşturmuşsa kuyruktan siler. e.DeliveryTag
                 // false değeri ilgili mesajın durumunu rabbitmq ya bildir
+
+
+                //File.AppendAllText("log-critical.txt", message+ "\n");
 
                 channel.BasicAck(e.DeliveryTag, false);
             };
