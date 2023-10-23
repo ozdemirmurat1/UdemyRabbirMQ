@@ -16,6 +16,7 @@ namespace RabbitMQWeb.Excel.Controllers
             _context = context;
         }
 
+        [HttpPost]
         public async Task<IActionResult> Upload(IFormFile file,int fileId)
         {
             if (file is not { Length: > 0 }) return BadRequest();
