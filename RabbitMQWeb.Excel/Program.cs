@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
+using RabbitMQWeb.Excel.Hubs;
 using RabbitMQWeb.Excel.Models;
 using RabbitMQWeb.Excel.Services;
 
@@ -14,6 +15,8 @@ namespace RabbitMQWeb.Excel
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddSignalR();
 
             builder.Services.AddSingleton(sp=>new ConnectionFactory() { Uri=new Uri(builder.Configuration.GetConnectionString("RabbitMQ")),DispatchConsumersAsync = true});
 
@@ -45,6 +48,8 @@ namespace RabbitMQWeb.Excel
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.MapHub<MyHub>("/MyHub");
 
             app.UseAuthentication();
 
