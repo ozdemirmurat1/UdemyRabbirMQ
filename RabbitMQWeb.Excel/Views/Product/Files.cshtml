@@ -4,7 +4,23 @@
 @section Scripts{
 
     <script>
+        $(document).ready(function () {
 
+            var hasStartCreatingExcel = '@TempData["StartCreatingExcel"]';
+
+            if (hasStartCreatingExcel) {
+
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Excel oluşturma işlemi başlamıştır.Bittiğinde bildiri alacaksınız.',
+                    showConfirmButton: false,
+                    timer:2500
+
+                })
+            }
+
+        })
     </script>
 }
 
